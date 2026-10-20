@@ -5,3 +5,4 @@ __pycache__/
 credentials.json
 data/
 .pytest_cache/
+*.egg-info/

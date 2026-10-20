@@ -1,8 +1,0 @@
-requests
-pandas
-pyyaml
-gspread
-python-dotenv
-
-[dev]
-pytest
