@@ -1,0 +1,38 @@
+# Configuración del pipeline. Editar acá, sin tocar el código.
+
+ciudades:
+  - nombre: Iquique
+    latitud: -20.2307
+    longitud: -70.1355
+  - nombre: Copiapó
+    latitud: -27.3668
+    longitud: -70.3323
+  - nombre: Santiago
+    latitud: -33.4489
+    longitud: -70.6693
+  - nombre: Concepción
+    latitud: -36.8270
+    longitud: -73.0503
+  - nombre: Castro
+    latitud: -42.4824
+    longitud: -73.7622
+
+api:
+  url: https://api.open-meteo.com/v1/forecast
+  dias_pasados: 30
+  dias_futuros: 7
+  zona_horaria: America/Santiago
+  variables_diarias:
+    - temperature_2m_max
+    - temperature_2m_min
+    - precipitation_sum
+    - wind_speed_10m_max
+  timeout_segundos: 15
+  reintentos: 3
+
+umbrales:
+  lluvia_fuerte_mm: 10    # día con lluvia >= a este valor
+  viento_fuerte_kmh: 50   # día con viento máximo >= a este valor
+
+base_de_datos:
+  ruta: data/clima.db
