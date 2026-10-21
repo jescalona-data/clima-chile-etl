@@ -71,6 +71,19 @@ python -m clima_etl
 
 Al terminar se imprime un resumen por ciudad y los datos quedan en `data/clima.db`.
 
+## Ejemplo de salida
+
+Ejecución del 20-10-2026:
+
+```
+    ciudad  temp_media_30d  lluvia_7d_mm  lluvia_30d_mm  dias_lluvia_fuerte_30d  dias_riesgo_30d  dias_riesgo_proximos
+    Castro            11.2           0.8          176.1                       8                8                     1
+Concepción            13.1          10.2          256.4                       8                8                     3
+   Copiapó            20.1           0.2            3.5                       0                0                     0
+   Iquique            20.0           0.4            4.7                       0                0                     0
+  Santiago            15.5           9.9          122.7                       3                3                     1
+```
+
 ## Consultar la base
 
 ```sql
