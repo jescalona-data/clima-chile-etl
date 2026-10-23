@@ -12,6 +12,10 @@ RENOMBRAR = {
 }
 NUMERICAS = ["temp_max", "temp_min", "lluvia_mm", "viento_max_kmh"]
 
+# Semáforo según los días de riesgo previstos en el pronóstico
+UMBRAL_RIESGO_MEDIO = 1  # 1 o 2 días  -> Medio
+UMBRAL_RIESGO_ALTO = 3   # 3 o más días -> Alto
+
 COLUMNAS_DIARIAS = [
     "ciudad", "fecha", "tipo", "temp_max", "temp_min", "temp_media", "rango_termico",
     "lluvia_mm", "viento_max_kmh", "lluvia_fuerte", "viento_fuerte", "riesgo_operativo",
@@ -71,3 +75,18 @@ def resumen_por_ciudad(df: pd.DataFrame, hoy: date) -> pd.DataFrame:
     for col in ["dias_lluvia_fuerte_30d", "dias_riesgo_30d", "dias_riesgo_proximos"]:
         resumen[col] = resumen[col].astype(int)
     return resumen
+
+def nivel_riesgo(dias_riesgo: int) -> str:
+    """Traduce una cantidad de días de riesgo a un nivel de semáforo."""
+    if dias_riesgo >= UMBRAL_RIESGO_ALTO:
+        return "🔴 Alto"
+    if dias_riesgo >= UMBRAL_RIESGO_MEDIO:
+        return "🟡 Medio"
+    return "🟢 Bajo"
+
+
+def agregar_nivel_riesgo(resumen: pd.DataFrame) -> pd.DataFrame:
+    """Devuelve una copia del resumen con la columna `nivel_riesgo` (semáforo)."""
+    salida = resumen.copy()
+    salida.insert(1, "nivel_riesgo", salida["dias_riesgo_proximos"].apply(nivel_riesgo))
+    return salida

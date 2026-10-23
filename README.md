@@ -1,5 +1,7 @@
 # Clima Chile ETL
 
+![Dashboard en Google Sheets](img/dashboard.png)
+
 Pipeline ETL en Python que consume la API de [Open-Meteo](https://open-meteo.com/), calcula indicadores climáticos con enfoque operativo para cinco ciudades de Chile y acumula el histórico en una base SQLite.
 
 ## Qué hace
@@ -29,7 +31,8 @@ clima-chile-etl/
 │   ├── load.py              # escritura en SQLite
 │   ├── logger.py            # logging con hora y nivel
 │   ├── pipeline.py          # orquesta extract -> transform -> load
-│   └── __main__.py          # punto de entrada
+│   ├── __main__.py          # punto de entrada
+│   └── sheet.py             # conecta con sheet
 ├── pyproject.toml
 └── requirements.txt
 ```
@@ -102,5 +105,5 @@ Datos meteorológicos de [Open-Meteo.com](https://open-meteo.com/). El uso gratu
 ## Roadmap
 
 - [x] Fase 1: extracción, transformación y carga en SQLite
-- [ ] Fase 2: dashboard en Google Sheets con formato automático
+- [x] Fase 2: dashboard en Google Sheets con formato automático
 - [ ] Fase 3: tests con `pytest` y ejecución programada

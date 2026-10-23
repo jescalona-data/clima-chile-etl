@@ -1,8 +1,10 @@
 """Carga y validación de la configuración (config/settings.yaml)."""
+import os
 from dataclasses import dataclass
 from pathlib import Path
 
 import yaml
+from dotenv import load_dotenv
 
 # src/clima_etl/config.py -> la raíz del proyecto está 3 niveles arriba
 RAIZ = Path(__file__).resolve().parents[2]
@@ -29,9 +31,14 @@ class Settings:
     lluvia_fuerte_mm: float
     viento_fuerte_kmh: float
     ruta_db: Path
+    # Opcionales: vienen del archivo .env (si faltan, no se publica en Sheets)
+    ruta_credenciales: Path | None = None
+    nombre_sheet: str | None = None
 
 
 def cargar_settings(ruta: Path = RUTA_SETTINGS) -> Settings:
+    load_dotenv(RAIZ / ".env")
+
     if not ruta.exists():
         raise FileNotFoundError(f"No encuentro el archivo de configuración: {ruta}")
 
@@ -47,6 +54,7 @@ def cargar_settings(ruta: Path = RUTA_SETTINGS) -> Settings:
 
     api = cfg["api"]
     umbrales = cfg["umbrales"]
+    credenciales = os.getenv("GOOGLE_CREDENTIALS_PATH")
     return Settings(
         ciudades=ciudades,
         api_url=api["url"],
@@ -59,4 +67,6 @@ def cargar_settings(ruta: Path = RUTA_SETTINGS) -> Settings:
         lluvia_fuerte_mm=float(umbrales["lluvia_fuerte_mm"]),
         viento_fuerte_kmh=float(umbrales["viento_fuerte_kmh"]),
         ruta_db=RAIZ / cfg["base_de_datos"]["ruta"],
+        ruta_credenciales=Path(credenciales) if credenciales else None,
+        nombre_sheet=os.getenv("SHEET_NAME") or None,
     )
