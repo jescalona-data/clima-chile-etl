@@ -1,0 +1,45 @@
+name: Pipeline diario
+
+on:
+  schedule:
+    - cron: "0 11 * * *"   # 11:00 UTC = 07:00 u 08:00 en Chile, según la época del año
+  workflow_dispatch:        # permite ejecutarlo a mano desde la pestaña Actions
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pipeline-clima     # evita dos ejecuciones simultáneas
+  cancel-in-progress: false
+
+jobs:
+  ejecutar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Instalar el proyecto
+        run: pip install -e .
+
+      # Cada ejecución parte de cero, así que se guarda y restaura la base SQLite
+      # para que el histórico siga acumulándose (best effort: GitHub puede borrar cachés viejas).
+      - name: Restaurar el histórico (SQLite)
+        uses: actions/cache@v5
+        with:
+          path: data
+          key: clima-db-${{ github.run_id }}
+          restore-keys: clima-db-
+
+      - name: Ejecutar el pipeline
+        env:
+          GOOGLE_CREDENTIALS_JSON: ${{ secrets.GOOGLE_CREDENTIALS_JSON }}
+          SHEET_NAME: ${{ secrets.SHEET_NAME }}
+        run: |
+          printf '%s' "$GOOGLE_CREDENTIALS_JSON" > "$RUNNER_TEMP/credenciales.json"
+          export GOOGLE_CREDENTIALS_PATH="$RUNNER_TEMP/credenciales.json"
+          python -m clima_etl

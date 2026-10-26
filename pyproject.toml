@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "clima-etl"
 version = "0.1.0"
 description = "Pipeline ETL de clima para ciudades de Chile (Open-Meteo -> SQLite -> Google Sheets)"
-requires-python = ">=3.10"
+requires-python = ">=3.12"
 dependencies = [
     "requests",
     "pandas",
