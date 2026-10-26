@@ -4,6 +4,9 @@
 
 Pipeline ETL en Python que consume la API de [Open-Meteo](https://open-meteo.com/), calcula indicadores climáticos con enfoque operativo para cinco ciudades de Chile y acumula el histórico en una base SQLite.
 
+[![Tests](https://github.com/jescalona-data/clima-chile-etl/actions/workflows/tests.yml/badge.svg)](https://github.com/jescalona-data/clima-chile-etl/actions/workflows/tests.yml)
+[![Pipeline diario](https://github.com/jescalona-data/clima-chile-etl/actions/workflows/pipeline.yml/badge.svg)](https://github.com/jescalona-data/clima-chile-etl/actions/workflows/pipeline.yml)
+
 ## Qué hace
 
 1. **Extrae** los últimos 30 días y el pronóstico de los próximos 7 para cada ciudad, con timeouts y reintentos.
@@ -98,6 +101,22 @@ GROUP BY ciudad
 ORDER BY dias_riesgo DESC;
 ```
 
+## Tests
+
+```bash
+pip install -e ".[dev]"
+pytest
+```
+
+48 tests que corren sin internet: la API y Google Sheets se reemplazan por simulaciones. Cubren los umbrales de riesgo, los reintentos (qué errores se reintentan y cuáles no), la carga idempotente en SQLite, la lectura de configuración y el formato del dashboard. Se ejecutan automáticamente en cada push con GitHub Actions.
+
+## Ejecución automática
+
+El flujo `pipeline.yml` ejecuta el pipeline todos los días y actualiza el dashboard. Las credenciales se guardan como secretos del repositorio (`GOOGLE_CREDENTIALS_JSON` y `SHEET_NAME`), nunca en el código. También se puede lanzar a mano desde la pestaña Actions.
+
+
+
+
 ## Fuente de datos
 
 Datos meteorológicos de [Open-Meteo.com](https://open-meteo.com/). El uso gratuito de la API es solo para fines no comerciales, y los datos requieren atribución. Este proyecto es de práctica y portfolio; antes de usarlo en un contexto comercial hay que revisar las condiciones de Open-Meteo.
@@ -106,4 +125,4 @@ Datos meteorológicos de [Open-Meteo.com](https://open-meteo.com/). El uso gratu
 
 - [x] Fase 1: extracción, transformación y carga en SQLite
 - [x] Fase 2: dashboard en Google Sheets con formato automático
-- [ ] Fase 3: tests con `pytest` y ejecución programada
+- [x] Fase 3: tests con `pytest` y ejecución programada
